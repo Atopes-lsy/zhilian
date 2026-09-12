@@ -1,0 +1,250 @@
+{
+  "defaults": {
+    "base_url": "http://localhost:8000",
+    "allow_production_tests": false,
+    "locale": "zh-CN",
+    "timezone": "Asia/Shanghai",
+    "seed": 20260909,
+    "timeout_ms": 10000,
+    "retries": 0,
+    "visual_diff_percent": 1.0,
+    "viewports": [
+      {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      }
+    ]
+  },
+  "personas": [
+    {
+      "id": "demo-learner",
+      "role": "demo_learner",
+      "fixture": "synthetic-zhihu-question"
+    }
+  ],
+  "cases": [
+    {
+      "id": "MVP-01-API-001",
+      "requirement_ids": [
+        "MVP-01"
+      ],
+      "module": "question-fit-detector",
+      "priority": "P0",
+      "type": "api",
+      "preconditions": [
+        "API is running against synthetic Zhihu question data"
+      ],
+      "persona": "demo-learner",
+      "input": {
+        "method": "POST",
+        "path": "/api/zhihu/analyze",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "question_id": "q_ai_app_demo"
+        }
+      },
+      "steps": [
+        "Analyze the simulated Zhihu question once",
+        "Inspect learning fit and notification text"
+      ],
+      "expected": {
+        "status": 200,
+        "json_subset": {
+          "fit_level": "high",
+          "notification": "已为你炼成今日行动清单"
+        }
+      },
+      "cleanup": []
+    },
+    {
+      "id": "MVP-02-API-001",
+      "requirement_ids": [
+        "MVP-02"
+      ],
+      "module": "zhihu-signal-quality",
+      "priority": "P0",
+      "type": "api",
+      "preconditions": [
+        "Synthetic question includes answers with author tags, voteup counts, and comment summaries"
+      ],
+      "persona": "demo-learner",
+      "input": {
+        "method": "POST",
+        "path": "/api/zhihu/analyze",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "question_id": "q_ai_app_demo"
+        }
+      },
+      "steps": [
+        "Analyze Zhihu-native signals",
+        "Validate answer quality labels and counterexample radar"
+      ],
+      "expected": {
+        "status": 200,
+        "json_required_fields": [
+          "answer_quality_labels",
+          "counterexample_radar",
+          "judge_trace"
+        ],
+        "quality_labels_contains": [
+          "优先参考",
+          "谨慎参考"
+        ]
+      },
+      "cleanup": []
+    },
+    {
+      "id": "MVP-03-API-001",
+      "requirement_ids": [
+        "MVP-03"
+      ],
+      "module": "experience-action-list",
+      "priority": "P0",
+      "type": "api",
+      "preconditions": [
+        "Question fit is high and answer quality labels are available"
+      ],
+      "persona": "demo-learner",
+      "input": {
+        "method": "POST",
+        "path": "/api/zhihu/analyze",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "question_id": "q_ai_app_demo",
+          "learner_profile": {
+            "identity": "大学生",
+            "goal": "做项目",
+            "daily_minutes": 120
+          }
+        }
+      },
+      "steps": [
+        "Generate action-first output",
+        "Inspect source binding and applicability"
+      ],
+      "expected": {
+        "status": 200,
+        "json_required_fields": [
+          "experience_summary",
+          "action_items",
+          "sources"
+        ],
+        "each_action_has": [
+          "why_it_matters",
+          "applicable_to",
+          "check",
+          "source_ids",
+          "confidence"
+        ]
+      },
+      "cleanup": []
+    },
+    {
+      "id": "MVP-04-API-001",
+      "requirement_ids": [
+        "MVP-04"
+      ],
+      "module": "quiz-feedback-loop",
+      "priority": "P0",
+      "type": "api",
+      "preconditions": [
+        "Action list has been generated"
+      ],
+      "persona": "demo-learner",
+      "input": {
+        "method": "POST",
+        "path": "/api/quiz/submit",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "question_id": "q_ai_app_demo",
+          "answers": [
+            {
+              "quiz_id": "quiz_concept_001",
+              "selected": "wrong"
+            }
+          ]
+        }
+      },
+      "steps": [
+        "Submit 3 quiz answers with one wrong answer",
+        "Inspect generated review card"
+      ],
+      "expected": {
+        "status": 200,
+        "quiz_count": 3,
+        "review_cards_count": 1,
+        "json_required_fields": [
+          "score",
+          "mistake_type",
+          "review_cards"
+        ]
+      },
+      "cleanup": []
+    },
+    {
+      "id": "MVP-05-UI-001",
+      "requirement_ids": [
+        "MVP-01",
+        "MVP-02",
+        "MVP-03",
+        "MVP-04",
+        "MVP-05"
+      ],
+      "module": "zhihu-sidebar-demo",
+      "priority": "P0",
+      "type": "ui",
+      "preconditions": [
+        "Web and API servers are running",
+        "Synthetic Zhihu question data is available"
+      ],
+      "persona": "demo-learner",
+      "input": {
+        "start_path": "/",
+        "viewport": "desktop",
+        "values": {
+          "question": "如何从零做一个 AI 应用 Demo？"
+        }
+      },
+      "steps": [
+        "Open the simulated Zhihu question page",
+        "Wait for automatic analysis and lightweight notification",
+        "Inspect action list, answer quality labels, counterexample radar and quiz",
+        "Answer one quiz item incorrectly",
+        "Inspect generated review card",
+        "Open judge trace"
+      ],
+      "expected": {
+        "visible_text": [
+          "已为你炼成",
+          "适合炼成学习行动",
+          "优先参考",
+          "作者标签",
+          "反例提醒",
+          "复习卡片",
+          "评委 Trace"
+        ],
+        "visual_invariants": [
+          "no-overlap",
+          "no-horizontal-scroll",
+          "primary-action-visible"
+        ]
+      },
+      "cleanup": []
+    }
+  ]
+}

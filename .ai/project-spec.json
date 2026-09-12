@@ -1,0 +1,186 @@
+{
+  "project": {
+    "name": "知炼 EchoMind",
+    "goal": "从零实现一个基于 EchoMind 架构思想的知乎站内学习增强插件，在用户进入问题页后判断学习适配度，把问题、回答、作者标签、赞同数和评论反例转化为经验可信度、行动清单、自测题和错题复习卡片。",
+    "target_users": [
+      "有明确学习或成长目标但没有体系化方法的人",
+      "大学生、职场新人和自我提升用户",
+      "希望把知乎高质量回答转成行动方案的用户"
+    ],
+    "success_metrics": [
+      {
+        "metric": "judge_demo_completion",
+        "target": "A judge can complete auto trigger, action list, quiz, review card, and trace inspection within 3 minutes"
+      },
+      {
+        "metric": "experience_to_action",
+        "target": "Every generation returns fit_level, answer_quality_labels, experience_summary, action_items, quiz, review_cards, sources, and judge_trace"
+      },
+      {
+        "metric": "zhihu_native_signals",
+        "target": "Demo uses question title, answer content, author tag, voteup count, and comment summary mock"
+      }
+    ]
+  },
+  "constraints": {
+    "reuse_existing_stack": false,
+    "stack_preferences": [
+      "New repository",
+      "EchoMind architecture reference only",
+      "Vite frontend",
+      "FastAPI backend",
+      "Simulated Zhihu question page sidebar",
+      "Local-first data storage",
+      "Provider interface for OpenAI official API, DeepSeek, or mock mode"
+    ],
+    "deployment_target": "local demo first",
+    "deadline": null,
+    "budget": "free/local implementation until model provider is approved",
+    "compliance": [
+      "No real Zhihu account integration in MVP",
+      "No automated scraping in MVP",
+      "Use synthetic or de-identified content only"
+    ],
+    "external_services": [
+      "LLM provider is a G1 decision"
+    ]
+  },
+  "scope": {
+    "mvp_must_have": [
+      {
+        "id": "MVP-01",
+        "name": "Zhihu Question Sidebar",
+        "acceptance": [
+          "Show a simulated Zhihu question page with a right-side learning plugin",
+          "Automatically trigger analysis when question context is loaded and show a lightweight notification",
+          "Classify question learning fit as high, medium, or low",
+          "Use synthetic question, answer, author tag, voteup count, and comment summary data"
+        ]
+      },
+      {
+        "id": "MVP-02",
+        "name": "Zhihu Signal And Quality",
+        "acceptance": [
+          "Prioritize high-quality answers using voteup count, author tag, structure, boundary awareness, and comment challenge signals",
+          "Label answers as 优先参考, 谨慎参考, or 仅作补充",
+          "Show comment-based counterexamples as boundary reminders"
+        ]
+      },
+      {
+        "id": "MVP-03",
+        "name": "Experience Action List",
+        "acceptance": [
+          "Generate experience_summary and action_items as the primary output",
+          "Use a context-dependent number of action items instead of a fixed count",
+          "Each action item includes why_it_matters, applicable_to, check, source_ids, and confidence"
+        ]
+      },
+      {
+        "id": "MVP-04",
+        "name": "Quiz Feedback Loop",
+        "acceptance": [
+          "Generate self-test quiz from the action list and experience summary",
+          "Default quiz count is 3",
+          "After an incorrect answer, generate one targeted review flashcard",
+          "Keep the adjustment lightweight instead of rebuilding the full plan"
+        ]
+      },
+      {
+        "id": "MVP-05",
+        "name": "Judge Trace",
+        "acceptance": [
+          "Ordinary users see final learning results first",
+          "Judge mode shows Trigger, FitDetector, QualityRanker, CommentSynthesizer, Distiller, ActionCoach, Quiz, and Review agent steps",
+          "Trace includes source_ids, author tags, comment-based counterexamples, and uncertainty checks"
+        ]
+      }
+    ],
+    "out_of_scope": [
+      "Modifying the original EchoMind project",
+      "Real Zhihu account login",
+      "Automated Zhihu scraping",
+      "Production multi-user auth",
+      "Model fine-tuning",
+      "Public deployment before G5 approval",
+      "Real personal data storage"
+    ],
+    "bonus_modules": [
+      {
+        "id": "BONUS-01",
+        "name": "Perspective Comparison",
+        "depends_on": [
+          "MVP-01",
+          "MVP-02"
+        ]
+      },
+      {
+        "id": "BONUS-02",
+        "name": "3/7/14 Day Study Plan",
+        "depends_on": [
+          "MVP-02",
+          "MVP-03"
+        ]
+      },
+      {
+        "id": "BONUS-03",
+        "name": "Lightweight Graphic Article Rewrite",
+        "depends_on": [
+          "MVP-02"
+        ]
+      }
+    ]
+  },
+  "roles_and_data": {
+    "roles": [
+      "demo_learner",
+      "developer"
+    ],
+    "sensitive_data": [
+      "Real Zhihu user identity",
+      "Real private content",
+      "API keys"
+    ],
+    "retention_rules": [
+      "Commit only synthetic or de-identified samples",
+      "Keep API keys in .env files",
+      "Allow local demo data reset"
+    ]
+  },
+  "design": {
+    "style_keywords": [
+      "Zhihu question sidebar plugin",
+      "compact",
+      "action-first",
+      "evidence-backed",
+      "professional hackathon demo"
+    ],
+    "reference_paths": [],
+    "brand_colors": [],
+    "accessibility_target": "WCAG 2.1 AA where practical for the demo",
+    "viewports": [
+      {
+        "name": "mobile",
+        "width": 390,
+        "height": 844
+      },
+      {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      }
+    ]
+  },
+  "quality_gates": {
+    "judge_total_min": 85,
+    "judge_dimension_min": 70,
+    "require_human_mvp_acceptance": true,
+    "require_human_release_approval": true
+  },
+  "human_approvals": {
+    "g0_mvp_scope": "approved",
+    "g1_architecture": "local_mock_runtime_approved",
+    "g2_mvp_acceptance": "pending",
+    "g4_review_triage": "pending",
+    "g5_release": "pending"
+  }
+}

@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>知炼 · 凝炼模式（用户版）</title>
+<style>
+  :root{--zh-blue:#1772ee; --ink:#1a1a1a; --sub:#8590a6; --line:#f0f2f5; --bg:#f6f7f9; --card:#fff;
+        --warn:#c8581e; --warn-bg:#fff4ec; --ok:#178a55; --ok-bg:#eef8f1; --shadow:0 12px 40px rgba(10,20,40,.10)}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  body{margin:0; background:radial-gradient(1200px 700px at 50% -10%, #e9f0fb 0%, #dfe5ee 60%, #d3dae5 100%);
+       font:15px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif; color:var(--ink);
+       min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px 16px}
+  .phone{width:396px; height:820px; background:var(--bg); border-radius:44px; padding:12px;
+         box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.6); position:relative; flex-shrink:0; margin:auto}
+  .screen{background:var(--bg); border-radius:34px; height:100%; overflow:hidden; display:flex; flex-direction:column; position:relative}
+  .statusbar{height:38px; display:flex; align-items:center; justify-content:space-between; padding:0 22px; font-size:12px; font-weight:600; flex-shrink:0}
+  .statusbar .dots{display:flex; gap:5px} .statusbar .dots i{width:8px;height:8px;border-radius:50%;background:#c9d0da} .statusbar .dots i.on{background:#111}
+  .zh-nav{display:flex; align-items:center; gap:12px; padding:10px 16px; background:var(--card); border-bottom:1px solid var(--line); font-size:13px; color:var(--sub); flex-shrink:0}
+  .zh-logo{font-size:20px; font-weight:800; color:var(--zh-blue)}
+  .zh-nav span.on{color:var(--ink); font-weight:600}
+  .zh-nav .spacer{flex:1}
+  .zh-search{display:flex; align-items:center; gap:4px; background:var(--bg); border-radius:16px; padding:2px 4px 2px 12px; flex:1; min-width:0}
+  .zh-search input{flex:1; border:0; background:transparent; font:inherit; font-size:12px; color:var(--ink); outline:none; min-width:0}
+  .zh-search button{background:var(--zh-blue); color:#fff; border:0; border-radius:12px; padding:3px 12px; font-size:12px; font-weight:600; cursor:pointer; flex-shrink:0}
+  .feed{flex:1; overflow-y:auto; padding:14px 14px 24px; scrollbar-width:none}
+  .feed::-webkit-scrollbar{display:none}
+
+  .q-card{background:var(--card); border-radius:14px; padding:16px; margin-bottom:12px}
+  .q-tags{font-size:11px; color:#6a94d6; margin-bottom:8px}
+  .q-title{font-size:18px; font-weight:700; line-height:1.45; margin:0}
+  .q-meta{font-size:12px; color:var(--sub); margin-top:9px; display:flex; gap:14px}
+
+  .consensus-card{background:linear-gradient(135deg,#eef4ff,#eaf1ff); border:1px solid #d6e4fb; border-radius:14px; padding:13px 16px; margin-bottom:12px}
+  .consensus-card .cc-head{font-size:12.5px; font-weight:700; color:var(--zh-blue); margin-bottom:8px}
+  .consensus-card .cc-row{display:flex; gap:8px; font-size:12.5px; margin-bottom:6px; align-items:flex-start}
+  .consensus-card .cc-row:last-child{margin-bottom:0}
+  .consensus-card .cc-row .tag{font-size:10px; font-weight:700; padding:0 7px; border-radius:5px; flex-shrink:0; line-height:1.8; margin-top:1px}
+  .consensus-card .cc-agree .tag{background:var(--ok); color:#fff}
+  .consensus-card .cc-diff .tag{background:var(--warn); color:#fff}
+  .consensus-card .cc-row .txt{color:#3a4658; line-height:1.6}
+
+  .a-card{background:var(--card); border-radius:14px; padding:16px; margin-bottom:12px}
+  .a-author{display:flex; align-items:center; gap:10px; margin-bottom:6px}
+  .a-avatar{width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#5b8def,#1772ee); color:#fff; display:grid; place-items:center; font-weight:700; font-size:15px; flex-shrink:0}
+  .a-author .who{flex:1; min-width:0}
+  .a-author .name{font-size:14px; font-weight:600; display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+  .badge{font-size:10px; font-weight:600; padding:1px 7px; border-radius:4px; line-height:1.6}
+  .badge.tag{background:#eef4ff; color:var(--zh-blue)}
+  .a-author .bio{font-size:11px; color:var(--sub)}
+  .a-author .follow{margin-left:auto; font-size:11px; color:var(--zh-blue); border:1px solid var(--zh-blue); border-radius:14px; padding:2px 12px; flex-shrink:0}
+
+  .original{font-size:14px; line-height:1.95; color:#333; margin:10px 0 4px; scroll-margin-top:64px}
+  .original p{margin:0 0 14px}
+  mark.anchor{background:transparent; color:inherit; padding:0; transition:background .3s, font-weight .3s}
+  mark.anchor.hl{background:#fff3bf; font-weight:700; padding:0 2px; border-radius:3px}
+
+  .condensed{display:block}
+  .c-hero{margin:12px 0 14px}
+  .c-hero .tl{font-size:16px; font-weight:700; line-height:1.5; background:linear-gradient(135deg,#eef4ff,#e7f0ff); border:1px solid #dce8fb; border-radius:12px; padding:14px}
+  .c-sec{margin-bottom:14px}
+  .c-sec-title{font-size:13px; font-weight:700; margin:0 0 8px; color:var(--ink)}
+  .step-item{display:flex; gap:10px; padding:10px 12px; background:#fbfcfe; border:1px solid #eef1f6; border-radius:11px; margin-bottom:8px; align-items:flex-start}
+  .step-item .idx{width:22px; height:22px; border-radius:50%; background:var(--zh-blue); color:#fff; font-size:12px; font-weight:700; display:grid; place-items:center; flex-shrink:0; margin-top:1px}
+  .step-item .body{flex:1; min-width:0}
+  .step-item .act{font-size:13px; font-weight:600}
+  .quote{margin-top:5px; font-size:11.5px; color:#6b7482; background:#fff; border-left:2px solid #c9d6f0; padding:5px 9px; border-radius:4px; line-height:1.55}
+  .src-link{font-size:10.5px; color:var(--zh-blue); border:0; background:transparent; padding:0; cursor:pointer; font-weight:600; margin-left:5px}
+  .pit{background:var(--warn-bg); border:1px solid #f7e4d2; border-radius:11px; padding:10px 12px; margin-bottom:8px}
+  .pit .ph{font-size:13px; font-weight:700; color:#7c4a20; display:flex; gap:7px; align-items:center}
+  .pit .ph .x{color:var(--warn); font-weight:800}
+  .pit .quote{border-left-color:#e8c39b; color:#8a6a42}
+  .counter{background:#fff8f0; border:1px solid #f5e2ca; border-radius:12px; padding:11px 12px; margin-bottom:12px}
+  .counter .c-head{font-size:11px; font-weight:700; color:var(--warn); margin-bottom:4px}
+  .counter .c-body{font-size:12px; color:#7c4a20; line-height:1.65}
+  .suit{font-size:11.5px; color:#5a6b84; background:#f4f7fb; border:1px solid #e6ecf4; border-radius:9px; padding:8px 11px}
+  .suit b{color:var(--ink); font-weight:700}
+  .expand-link{display:block; width:100%; text-align:center; border:0; background:transparent; color:var(--zh-blue); font-size:12px; font-weight:600; padding:10px 0 2px; cursor:pointer}
+
+  .a-actions{display:flex; gap:6px; align-items:center; padding-top:12px; margin-top:12px; border-top:1px solid var(--line); font-size:12px; color:var(--sub)}
+  .a-actions span{margin-right:auto}
+  .fold-bar{display:flex; align-items:center; gap:10px; background:#f7f9fc; border:1px dashed #dde3ec; border-radius:10px; padding:10px 12px; margin:8px 0 4px; font-size:12px; color:var(--sub)}
+  .fold-bar .ft{flex:1}
+  .fold-btn{font-size:11px; color:var(--zh-blue); border:1px solid var(--zh-blue); background:#fff; border-radius:14px; padding:2px 12px; cursor:pointer; font-weight:600}
+
+  .return-pill{position:absolute; left:50%; transform:translateX(-50%); bottom:18px; z-index:12; background:var(--zh-blue); color:#fff; border:0; border-radius:20px; padding:8px 18px; font-size:12.5px; font-weight:600; cursor:pointer; box-shadow:0 4px 16px rgba(23,114,238,.4); display:none}
+
+  .badge.auto{background:#eef4ff; color:var(--zh-blue)}
+  .keypoints{position:sticky; top:0; z-index:6; display:flex; background:var(--card); margin:10px -4px 10px; padding:12px 4px 8px; border-bottom:1px solid var(--line); box-shadow:0 4px 10px -6px rgba(0,0,0,.14)}
+  .keypoints::before{content:""; position:absolute; top:18px; left:9%; right:9%; height:2px; background:#e3e8f0}
+  .keypoints .kp{flex:1; text-align:center; cursor:pointer; position:relative; z-index:1; font-size:10.5px; color:#8b94a5; line-height:1.3}
+  .keypoints .kp .dot{display:block; width:12px; height:12px; border-radius:50%; background:#fff; border:2px solid #c9d3e0; margin:0 auto 5px; transition:background .2s, border-color .2s}
+  .keypoints .kp.active{color:var(--zh-blue); font-weight:700}
+  .keypoints .kp.active .dot{background:var(--zh-blue); border-color:var(--zh-blue)}
+
+  .empty,.loading,.error{background:var(--card); border-radius:14px; padding:36px 20px; text-align:center; color:var(--sub); font-size:13px}
+  .loading{color:var(--zh-blue)} .error{color:#c0392b}
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <div class="statusbar"><span>11:34</span><span class="dots"><i class="on"></i><i></i><i></i></span></div>
+      <header class="zh-nav">
+        <span class="zh-logo">知乎</span>
+        <div class="zh-search">
+          <input id="query" placeholder="搜你感兴趣的内容" value="如何转行 AI 产品经理">
+          <button onclick="search()">搜索</button>
+        </div>
+      </header>
+
+      <div class="feed" id="feed">
+        <div class="empty">输入问题，点「搜索」，拉取真实知乎内容自动凝炼</div>
+      </div>
+
+      <button class="return-pill" id="returnPill" onclick="returnToCondensed()">↑ 返回提炼</button>
+    </div>
+  </div>
+
+<script>
+  const API = 'http://127.0.0.1:8000';
+  const $ = id => document.getElementById(id);
+  const TYPE_LABEL = {how_to:'操作指南', opinion:'观点分析', pitfall:'避坑经验', low_value:'低价值'};
+
+  document.getElementById('query').addEventListener('keydown', e => { if(e.key==='Enter') search(); });
+
+  // 当前处于「原文态」的回答 id（用于「返回提炼」悬浮按钮）
+  let expandedId = null;
+
+  function splitSentences(text){
+    return (text || '').split(/[。！？!?\n]+/).map(s => s.trim()).filter(Boolean);
+  }
+  function findSentenceIndex(quote, sentences){
+    const core = (quote || '').replace(/[………]/g, '').slice(0, 10);
+    for(let i=0;i<sentences.length;i++) if(core && sentences[i].includes(core)) return i;
+    return -1;
+  }
+
+  async function search(){
+    const query = $('query').value.trim();
+    if(!query) return;
+    expandedId = null; syncReturnPill();
+    $('feed').innerHTML = '<div class="loading">正在拉取知乎内容并凝炼…</div>';
+    try{
+      let resp = await fetch(API + '/api/condense/live', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({query, count:5})});
+      // 真实搜索额度耗尽（503）时，回退到内置 demo 数据
+      if(resp.status === 503){ resp = await fetch(API + '/api/demo/condense', {method:'POST', headers:{'Content-Type':'application/json'}}); }
+      if(!resp.ok){ const e = await resp.json(); throw new Error(e.detail || resp.statusText); }
+      render(await resp.json());
+    }catch(e){
+      $('feed').innerHTML = '<div class="error">⚠ ' + e.message + '<br><small>确认后端已启动 + zhihu-cli 已配置</small></div>';
+    }
+  }
+
+  function render(data){
+    let html = '';
+    // 问题卡
+    html += '<section class="q-card"><div class="q-tags">知乎搜索 · 实时凝炼</div><h1 class="q-title">' + (data.question.title || $('query').value) + '</h1><div class="q-meta"><span>'+data.answers.length+' 条结果</span></div></section>';
+    // 共识卡
+    const c = data.consensus;
+    if(c.agreements.length || c.disagreements.length){
+      html += '<section class="consensus-card"><div class="cc-head">本页要点</div>';
+      c.agreements.forEach(a => html += '<div class="cc-row cc-agree"><span class="tag">共识</span><span class="txt">'+a.claim+'</span></div>');
+      c.disagreements.forEach(a => html += '<div class="cc-row cc-diff"><span class="tag">分歧</span><span class="txt">'+a.claim+'</span></div>');
+      html += '</section>';
+    }
+    // 回答卡
+    data.answers.forEach(a => html += renderAnswer(a));
+    if(!data.answers.length) html += '<div class="empty">没有拉到相关内容</div>';
+    $('feed').innerHTML = html;
+  }
+
+  function authorHtml(a, avatarColor){
+    const letter = (a.author_name || '匿').charAt(0);
+    const tag = a.author_tag ? '<span class="badge tag">'+a.author_tag+'</span>' : '';
+    const autoBadge = a.state === 'auto_condense' ? '<span class="badge auto">已提炼</span>' : '';
+    return '<div class="a-author"><div class="a-avatar"'+(avatarColor?' style="background:'+avatarColor+'"':'')+'>'+letter+'</div>'
+      + '<div class="who"><div class="name">'+(a.author_name||'匿名用户')+' '+tag+' '+autoBadge+'</div>'
+      + '<div class="bio">'+(a.credibility==='无'?'':a.credibility+' · ')+(a.char_count+'字 · 干货率 '+(a.density*100|0)+'%')+'</div></div>'
+      + '<span class="follow">+ 关注</span></div>';
+  }
+
+  function renderAnswer(a){
+    if(a.state === 'auto_condense') return renderAuto(a);
+    const color = {opinion:'linear-gradient(135deg,#9b6dd9,#7b3fb5)', pitfall:'linear-gradient(135deg,#e8975a,#c8581e)'}[a.content_type];
+    if(a.state === 'skip'){
+      return '<article class="a-card">'+authorHtml(a, color)
+        + '<div class="original"><p>'+a.content_excerpt+'…</p></div>'
+        + (a.counterexamples.length ? '<div class="counter"><div class="c-head">⚠ 评论提醒</div><div class="c-body">'+a.counterexamples[0].content+'</div></div>' : '')
+        + '<div class="a-actions"><span>'+a.char_count+' 字 · 保持原文</span><span>▲ 赞同</span><span>▽</span><span>☆</span></div></article>';
+    }
+    return '<article class="a-card" id="card-'+a.answer_id+'">'+authorHtml(a, 'linear-gradient(135deg,#b6bcc6,#8b94a5)')
+      + '<div class="fold-bar"><span class="ft">这条回答已被折叠（低价值 / 软广）</span><button class="fold-btn" data-action="fold" data-id="'+a.answer_id+'">展开</button></div>'
+      + '<div class="original" id="fold-body-'+a.answer_id+'" style="display:none"><p>'+a.content_excerpt+'…</p></div>'
+      + '<div class="a-actions"><span>'+a.char_count+' 字</span><span>▲ 赞同</span><span>▽</span><span>☆</span></div></article>';
+  }
+
+  function renderAuto(a){
+    const id = a.answer_id;
+    const sentences = splitSentences(a.original_content);
+    const kps = [];
+    (a.key_points || []).forEach(k => { const i = findSentenceIndex(k.quote, sentences); if(i>=0) kps.push({title:k.short_label || k.title, idx:i}); });
+    const nodes = kps.slice(0, 6);
+
+    let condensed = '<div class="condensed" id="condensed-'+id+'">';
+    condensed += '<div class="c-hero"><div class="tl">'+a.takeaway+'</div></div>';
+    if((a.key_points||[]).length){ condensed += '<section class="c-sec"><h3 class="c-sec-title">要点</h3>';
+      a.key_points.forEach((k,ki) => { const idx = findSentenceIndex(k.quote, sentences); condensed += '<div class="step-item"><span class="idx">'+(ki+1)+'</span><div class="body"><div class="act">'+k.title+(idx>=0?' <button class="src-link" data-action="jump" data-id="'+id+'" data-idx="'+idx+'">原文 ↗</button>':'')+'</div></div></div>'; });
+      condensed += '</section>'; }
+    if(a.counterexamples.length) condensed += '<section class="c-sec"><h3 class="c-sec-title">评论提醒</h3><div class="counter"><div class="c-head">⚠ 有人踩过坑</div><div class="c-body">'+a.counterexamples[0].content+'</div></div></section>';
+    if(a.suit) condensed += '<div class="suit"><b>适合：</b>'+a.suit+'。</div>';
+    condensed += '<button class="expand-link" data-action="expand" data-id="'+id+'">展开原文</button></div>';
+
+    let kpBar = '<div class="keypoints" id="kp-'+id+'" style="display:none">';
+    nodes.forEach(n => kpBar += '<div class="kp" data-action="kpjump" data-id="'+id+'" data-idx="'+n.idx+'"><span class="dot"></span>'+n.title+'</div>');
+    kpBar += '</div>';
+
+    let orig = '<div class="original" id="orig-'+id+'" style="display:none">';
+    sentences.forEach((s,i) => orig += '<p><mark class="anchor" id="anchor-'+id+'-'+i+'">'+s+'。</mark></p>');
+    orig += '</div>';
+
+    return '<article class="a-card" id="card-'+id+'">'
+      + authorHtml(a, 'linear-gradient(135deg,#5b8def,#1772ee)')
+      + condensed + kpBar + orig
+      + '<div class="a-actions"><span>'+a.char_count+' 字 · 已凝炼</span><span>▲ 赞同</span><span>▽</span><span>☆</span></div></article>';
+  }
+
+  function expandOriginal(id){
+    $('condensed-'+id).style.display = 'none';
+    $('orig-'+id).style.display = '';
+    $('kp-'+id).style.display = 'flex';
+    expandedId = id; syncReturnPill();
+    $('orig-'+id).scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function returnToCondensed(){
+    if(!expandedId) return;
+    const id = expandedId;
+    $('orig-'+id).style.display = 'none';
+    $('kp-'+id).style.display = 'none';
+    $('condensed-'+id).style.display = 'block';
+    expandedId = null; syncReturnPill();
+    $('condensed-'+id).scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function jumpToSource(id, idx){
+    $('condensed-'+id).style.display = 'none';
+    $('orig-'+id).style.display = '';
+    $('kp-'+id).style.display = 'flex';
+    expandedId = id; syncReturnPill();
+    highlight(id, idx);
+  }
+
+  function kpJump(id, idx, node){
+    document.querySelectorAll('#kp-'+id+' .kp').forEach(k => k.classList.remove('active'));
+    node.classList.add('active');
+    highlight(id, idx);
+  }
+
+  function highlight(id, idx){
+    const card = $('card-'+id);
+    card.querySelectorAll('mark.anchor').forEach(m => m.classList.remove('hl'));
+    const target = $('anchor-'+id+'-'+idx);
+    if(target){ target.classList.add('hl'); target.scrollIntoView({behavior:'smooth', block:'center'}); }
+  }
+
+  function toggleFold(id){
+    const body = $('fold-body-'+id);
+    const btn = document.querySelector('#card-'+id+' .fold-btn');
+    const showing = body.style.display !== 'none';
+    body.style.display = showing ? 'none' : '';
+    btn.textContent = showing ? '展开' : '收起';
+  }
+
+  function syncReturnPill(){
+    const pill = $('returnPill');
+    if(!pill) return;
+    pill.style.display = expandedId ? 'block' : 'none';
+  }
+
+  // 事件委托：统一处理动态生成的按钮点击
+  $('feed').addEventListener('click', (e) => {
+    const el = e.target.closest('[data-action]');
+    if(!el) return;
+    const { action, id, idx } = el.dataset;
+    if(action === 'expand') expandOriginal(id);
+    else if(action === 'jump') jumpToSource(id, Number(idx));
+    else if(action === 'kpjump') kpJump(id, Number(idx), el);
+    else if(action === 'fold') toggleFold(id);
+  });
+
+  // 首次进入自动搜默认问题
+  search();
+</script>
+</body>
+</html>

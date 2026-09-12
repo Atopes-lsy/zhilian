@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.npm-cache/
+dist/
+build/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.playwright/
+data/runtime/
+data/uploads/
+coverage/
+.DS_Store
+Thumbs.db

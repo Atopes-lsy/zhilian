@@ -1,0 +1,83 @@
+{
+  "requirements": [
+    {
+      "id": "MVP-01",
+      "module": "question-fit-detector",
+      "status": "planned-v1.2",
+      "implementation": [
+        "Need to add simulated Zhihu question page and fit detector"
+      ],
+      "test_ids": [
+        "MVP-01-API-001",
+        "MVP-05-UI-001"
+      ],
+      "evidence": [
+        "Product optimization defined in .ai/interview-driven-product-optimization.md"
+      ],
+      "last_verified_at": "2026-09-09"
+    },
+    {
+      "id": "MVP-02",
+      "module": "zhihu-signal-quality",
+      "status": "planned-v1.2",
+      "implementation": [
+        "Need to add Zhihu-native answer quality labels and comment counterexample radar"
+      ],
+      "test_ids": [
+        "MVP-02-API-001",
+        "MVP-05-UI-001"
+      ],
+      "evidence": [
+        "Product optimization defined in .ai/interview-driven-product-optimization.md"
+      ],
+      "last_verified_at": "2026-09-09"
+    },
+    {
+      "id": "MVP-03",
+      "module": "experience-action-list",
+      "status": "planned-v1.2",
+      "implementation": [
+        "Need to make action_items the primary output"
+      ],
+      "test_ids": [
+        "MVP-03-API-001",
+        "MVP-05-UI-001"
+      ],
+      "evidence": [
+        "Product requirements updated to PRD v1.2"
+      ],
+      "last_verified_at": "2026-09-09"
+    },
+    {
+      "id": "MVP-04",
+      "module": "quiz-feedback-loop",
+      "status": "planned-v1.2",
+      "implementation": [
+        "Need to add 3-question quiz submission and one review card generation"
+      ],
+      "test_ids": [
+        "MVP-04-API-001",
+        "MVP-05-UI-001"
+      ],
+      "evidence": [
+        "Product requirements updated to PRD v1.2"
+      ],
+      "last_verified_at": "2026-09-09"
+    },
+    {
+      "id": "MVP-05",
+      "module": "judge-trace",
+      "status": "planned-v1.2",
+      "implementation": [
+        "Need to move Agent collaboration into judge trace toggle"
+      ],
+      "test_ids": [
+        "MVP-05-UI-001"
+      ],
+      "evidence": [
+        "Product optimization defined in .ai/interview-driven-product-optimization.md"
+      ],
+      "last_verified_at": "2026-09-09"
+    }
+  ]
+}
